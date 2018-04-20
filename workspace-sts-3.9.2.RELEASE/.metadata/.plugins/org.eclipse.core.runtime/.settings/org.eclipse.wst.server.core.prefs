@@ -1,0 +1,2 @@
+eclipse.preferences.version=1
+runtimes=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<runtimes>\n  <runtime id\="Apache Tomcat v7.0" location\="/Users/Sabyasachi/apache-tomcat-7.0.69" name\="Apache Tomcat v7.0" runtime-type-id\="org.eclipse.jst.server.tomcat.runtime.70" timestamp\="0" vm-install-id\="com.oracle.java.8u131.jdk" vm-install-type-id\="org.eclipse.jdt.internal.launching.macosx.MacOSXType"/>\n</runtimes>\n
