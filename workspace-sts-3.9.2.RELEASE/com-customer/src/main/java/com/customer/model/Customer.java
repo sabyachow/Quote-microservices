@@ -30,11 +30,11 @@ public class Customer {
 		this.id = id;
 	}
 
-	public void setFname(String fname) {
+	public void setfname(String fname) {
 		this.fname = fname;
 	}
 
-	public void setLname(String lname) {
+	public void setlname(String lname) {
 		this.lname = lname;
 	}
 
@@ -45,10 +45,10 @@ public class Customer {
 	public long getId() {
 		return id;
 	}
-	public String getFirstname() {
+	public String getfname() {
 		return fname;
 	}
-	public String getLastname() {
+	public String getlname() {
 		return lname;
 	}
 	public String getDL() {

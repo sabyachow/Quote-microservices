@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import com.customer.model.CustomerRepository;
 public class CustomerController {
 	@Autowired
 	private CustomerRepository customerRepository;
+	
 
 	@GetMapping("/customers")
 	public List<Customer> retrieveAllCustomers() {
@@ -56,15 +58,17 @@ public class CustomerController {
 
 		return customerOptional.get().getEligibility();
 	}
-	
 	@PostMapping("/addCustomer")
-	public ResponseEntity<Object> createCustomer(@RequestBody Customer customer) {
+	public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
+		
+		
 		Customer savedCustomer = customerRepository.save(customer);
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(savedCustomer.getId()).toUri();
 
-		return ResponseEntity.created(location).build();
+//		return ResponseEntity.created(location).build();
+		return new ResponseEntity<Customer>(savedCustomer, HttpStatus.CREATED);
 
 	}
 	

@@ -1,0 +1,5 @@
+package com.rating.auto.service;
+
+public class QuoteRepository {
+
+}

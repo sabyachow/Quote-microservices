@@ -1,0 +1,93 @@
+package com.rating.auto.service;
+
+import java.net.URI;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.http.HttpEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.rating.auto.model.Customer;
+import com.rating.auto.model.Quote;
+import com.rating.auto.model.Vehicle;
+
+
+@Service
+public class QuoteService {
+    private static final Logger log = LoggerFactory.getLogger(QuoteService.class);
+    private static final AtomicLong q_counter = new AtomicLong();
+    private final RestTemplate restTemplate;
+	private static DecimalFormat df2 = new DecimalFormat(".##");
+	private Quote quote;
+
+	@Autowired
+	private QuoteRepository repository;
+
+    public QuoteService(RestTemplate rest) {
+        this.restTemplate = rest;
+    }
+    
+	@HystrixCommand(fallbackMethod = "reliable")
+	public Quote getQuote(Quote _quote) {
+		URI uri = URI.create("http://localhost:8090/addCustomer");
+	    HttpEntity<Customer> request = new HttpEntity<>(_quote.getCustomers().get(0));
+		List<Customer> customersResponse = new ArrayList<Customer>();
+		double m_premium;
+	    try {
+			if(("Standard").equals(_quote.getType())) {
+				//Thread.sleep(10000);
+			    Customer responseEntity = restTemplate.postForObject(uri, request, Customer.class);
+				customersResponse.add(responseEntity);
+				//This is where the premium is set
+				m_premium = new Double(df2.format((new Random().nextDouble())*100));
+			    
+			}else {
+				log.info("Calculate Premium");
+				m_premium = new Double(df2.format(_quote.getM_premium()+_quote.getM_premium()*0.35));
+			}
+		}catch (Exception e) {
+				e.printStackTrace();
+		}
+		
+		double y_premium = (m_premium*12)-100;
+
+		quote = new Quote(new Random().nextLong(), _quote.getType(), customersResponse, vehicles, m_premium, y_premium);
+	    log.info(type+"-Premium"+m_premium);
+
+		storeQuoteMDB(quote);
+		return quote;
+	}
+ 	
+	 public Quote reliable(Quote _quote) {
+		    log.info("Curcuit Breacker Invoked");
+		    _quote.setQ_id(new Random().nextLong());
+		    _quote.setM_premium(0);
+		    _quote.setY_premium(0);
+			return _quote;
+					
+					
+	}
+	
+	private long getPremium() {
+		return new Random().nextLong();	
+	}
+	
+	private Quote storeQuoteMDB(Quote quote) {
+	    log.info("Inside Store Quote");
+	    repository.save(quote);
+	    return quote;
+
+	}
+
+}

@@ -1,34 +1,41 @@
 package com.rating.auto.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
 public class Customer {
+	@Id
+	@GeneratedValue
 	private long id;
-	private String firstname;
-	private String lastname;
+	private String fname;
+	private String lname;
 	private String DL;
 	private String eligibility;
 	
-    @Override
-    public String toString() {
-        return "Value{" +
-                "id=" + id + 
-                ", fname=" + firstname + ", lname=" + lastname + ", DL=" + DL +
-                '}';
-    }
+	public Customer() {
+		super();
+	}
+	
+	public Customer(long id, String fname, String lname, String d_id) {
+		this.id = id;
+		this.fname = fname;
+		this.lname = lname;
+		this.DL = d_id;
+	}
 	
 	
 	public void setId(long id) {
 		this.id = id;
 	}
 
-	public void setfirstname(String fname) {
-		this.firstname = fname;
+	public void setf(String fname) {
+		this.fname = fname;
 	}
 
-	public void setlastname(String lname) {
-		this.lastname = lname;
+	public void setl(String lname) {
+		this.lname = lname;
 	}
 
 	public void setDL(String d_id) {
@@ -38,21 +45,19 @@ public class Customer {
 	public long getId() {
 		return id;
 	}
-	public String getfirstname() {
-		return firstname;
+	public String getfname() {
+		return fname;
 	}
-	public String getlastname() {
-		return lastname;
+	public String getlname() {
+		return lname;
 	}
 	public String getDL() {
 		return DL;
 	}
 
-
 	public String getEligibility() {
 		return eligibility;
 	}
-
 
 	public void setEligibility(String eligibility) {
 		this.eligibility = eligibility;
